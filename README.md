@@ -30,6 +30,8 @@ This feature implements a thin lens camera with depth of field. Apart from the n
 
 In this depth of field implementation, the thin lens camera model is utilized based on two key properties: any ray originating from the same point on the film plane and passing through the thin lens will converge at the same point on the plane of focus, and a ray passing through the center of the lens remains directionally unchanged. First, the corresponding point on the near plane is computed relative to the sampled position and transformed into camera coordinates. A ray is then traced from the center of the lens through this near plane point, and its intersection with the plane of focus determines the final point for the sampled ray. A point is uniformly sampled on the lens, and the ray originates from the sampled point on the film, passes through the lens sample, and intersects the focus plane. Finally, the ray is transformed into world coordinates and returned.
 
+---
+
 ### Simple Extra Emitters
 #### Directional Light
 
@@ -38,6 +40,8 @@ A directional light simulates distant light sources, such as sunlight, that unif
 #### Spotlight
 
 A spotlight is a delta emitter that emits light in a conical shape from a specific position. The light intensity remains constant within a defined angle relative to its direction but gradually attenuates as the angle increases, following a specified falloff curve. Additionally, the radiance decreases with the square of the distance from the source. The spotlight is characterized by several properties: `position`, `direction`, `intensity`, and two parameters that define the angular falloff, `cosFalloffStart` and `cosFalloffEnd`. When sampling the spotlight, the sampled point is always at its position, and the probability density function (PDF) is consistently 1.0. The evaluation method returns the intensity, scaled by the falloff curve and further attenuated by the inverse square of the distance.
+
+---
 
 ### Homogeneous Participating Media (with Path Tracing Integrator)
 
@@ -57,6 +61,8 @@ Finally, a volumetric path tracing integrator class `VolpathMATS` is developed. 
 
 To prevent infinite recursion, Russian roulette is applied for probabilistic path termination based on the accumulated throughput.
 
+---
+
 ### Emissive Participating Media
 
 The `EmissiveHomogeneousMedium` class is built upon the `HomogeneousMedium`, with an additional radiance field, `Le`. 
@@ -72,6 +78,8 @@ To compute the PDF of emissive medium sampling, the volume of the medium is esti
 After emitter sampling, the integrator estimates the transmittance from the current vertex to the sampled point by casting successive rays between the two points and multiplying the transmittances of each segment. If one segment is blocked by a non-medium shape, the transmittance is set to zero, equivalent to a shadow ray failure.
 
 Since no emissive participating medium implementation exists in PBRT or Mitsuba, comparisons are made with the regular homogeneous medium for validation.
+
+---
 
 ### Disney BSDF
 

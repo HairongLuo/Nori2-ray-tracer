@@ -1,14 +1,16 @@
 # Nori2-ray-tracer
+
+## Overview
+
 Project of Computer Graphics at ETH Zürich, 2023 by M. Gross and M. Papas.
 
 Nori2 is an minimalistic ray tracer written in C++.
-In the course assignments we are required to implement and validate key rendering and graphics techniques based on Nori2.
-The features include a variety of integrators, shapes, textures, warpings, samplings, light sources and BRDFs to go from simple visibility computations to rendering complex scenes with global illumination with indirect lighting.
+In the course assignments we implement and validate key rendering and graphics techniques based on Nori2.
+The features include a variety of integrators, shapes, textures, warpings, samplings, light sources and BRDFs to go from simple visibility computations to rendering complex scenes with global illumination and indirect lighting.
 
-The final project features the theme: the more you look.
-We further implemented from a selection of advanced ray tracer features and eventually render a scene with the theme using our ray tracer. 
+The final project is centered around the theme: "The More You Look." In this work, we further implememt a selection of advanced ray tracer techniques, and eventually render a scene that reflects this theme using our own ray tracer implementation.
 
-The features I implemented are listed below:
+The features implemented are listed below:
 
 | Short Name                      | Features (if required) & Comments                    |
 |----------------------------------|------------------------------------------------------|
@@ -51,6 +53,9 @@ A spotlight is a delta emitter that emits light in a conical shape from a specif
 
 ### Homogeneous Participating Media (with Path Tracing Integrator)
 
+![Homogeneous Media Spheres](./images/homogeneous_spheres_nori.png)
+![Homogeneous Media Bunny](./images/homogeneous_bunny_nori.png)
+
 To begin, a `Medium` class is defined with properties including `sigmaA` (absorption coefficient), `sigmaS` (scattering coefficient), `sigmaT` (extinction coefficient), and a `phase function`. Each medium is associated with a `shape`, and a shape can have both an `interior and exterior medium`. 
 
 The `HomogeneousMedium` class inherits from `Medium`, implementing key methods such as `evalTransmittance`, `sampleDistance`, and `eval`. The transmittance of a ray segment within the medium is evaluated by calculating the path length and applying the transmittance equation to this length. For free-path sampling, the inversion method is used to determine the sampled path length. If the ray intersects a surface before the end of the sampled path, the free-path sampling is considered to have failed. `pdfSuccess` and `pdfFailure` are computed using their respective formulas.
@@ -70,6 +75,9 @@ To prevent infinite recursion, Russian roulette is applied for probabilistic pat
 ---
 
 ### Emissive Participating Media
+
+![Emissive Media Sphere](./images/emissive_sphere_mats_Le0.5.png)
+![Emissive Media Bunny](./images/emissive_bunny_mats_Le0.5.png)
 
 The `EmissiveHomogeneousMedium` class is built upon the `HomogeneousMedium`, with an additional radiance field, `Le`. 
 
@@ -93,17 +101,25 @@ Disney BSDF was implemented following the guidelines provided in a [UCSD assignm
 
 #### Diffuse
 
+![Disney Diffuse](./images/disney_diffuse_roughness0.png)
+
 The diffuse lobe captures the base diffusive color of the surface and utilizes a modified version of the Schlick Fresnel approximation, which accounts for both `baseColor` and `roughness`. The subsurface scattering lobe was excluded from this implementation, as it was not part of the project requirements. Therefore, the final diffuse reflection, \( f_{\text{diffuse}} \), is equivalent to \( f_{\text{baseDiffuse}} \). Cosine hemisphere sampling is employed to sample the diffuse lobe.
 
 #### Metallic
+
+![Disney Metallic](./images/disney_metallic_roughness0_anisotropic0.png)
 
 The metallic lobe models significant specular highlights and incorporates `roughness` and `anisotropic` parameters. It is based on the standard Cook-Torrance microfacet BRDF. The Fresnel term, \( F_m \), is computed using the Schlick approximation, while the normal distribution function, \( D_m \), employs the anisotropic Trowbridge-Reitz (GGX) distribution. Anisotropy is also implemented in this component. The average occlusion factor, \( G_m \), is modeled using the Smith model.
 
 #### Clearcoat
 
+![Disney Clearcoat](./images/disney_clearcoat_clearcoatGloss1.png)
+
 The clearcoat lobe models the heavy tails of specular reflections and uses `clearcoatGloss` as a parameter. The Fresnel term, \( F_c \), is based on a hard-coded index of refraction \( \eta = 1.5 \). The normal distribution function, \( D_c \), assumes isotropic roughness, while the geometric attenuation term, \( G_c \), utilizes a fixed roughness value of 0.25.
 
 #### Glass
+
+![Disney Glass](./images/disney_glass_roughness0_eta1.5.png)
 
 The glass lobe models light transmission through surfaces and applies the full Fresnel equation for dielectric materials. The normal distribution function, \( D_g \), and the geometric attenuation term, \( G_g \), are identical to those used in the metallic lobe.
 
@@ -120,3 +136,18 @@ f_{\text{disney}} = (1 - \text{specularTransmission}) \cdot (1 - \text{metallic}
 \]
 
 This formula blends the diffuse, metallic, clearcoat, and glass components by modulating them with the `specularTransmission`, `metallic`, and `clearcoat` parameters, ensuring a physically based representation of surface reflectance and transmission.
+
+#### Materials Created with Disney BSDF
+
+Following are materials with distinct visual properties created by tuning the parameters of Disney BSDF:
+
+![Disney Example 1](./images/disney_full_1_nori.png)
+![Disney Example 2](./images/disney_full_2_nori.png)
+
+## Rendering Competition
+
+![Rendering Competition](./images/rendering_competition.png)
+
+Around the theme of "The More You Look", this image named "The Forgotten Land" is rendered with the implemented Nori2 features. It features a cold, industrial city of concrete and steel, where a lone figure stands, holding a spotlight and gazing at a brightly lit spot. Around him, the buildings are dull and muted, but him attention is captivated by a vibrant, colorful place that looks like a children’s playground, standing out like an oasis of joy amid the grey. This lively, out-of-place scene invites him—and you—to pause and reflect on the clash between the harshness of post-modern life and the playful world before him. The stark surroundings heighten the mystery of this joyful spot, sparking thoughts about why it exists here and what it represents in such a lifeless city. The more you look, the more this contrast feels like a breath of fresh air, inviting moments of deeper contemplation.
+
+All models in the scene are downloaded from the follow websites: [TurboSquid](https://www.turbosquid.com/), [Sketchfab](https://sketchfab.com), [CGTrader](https://www.cgtrader.com).

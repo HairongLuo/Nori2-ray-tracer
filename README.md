@@ -26,6 +26,8 @@ Validation is performed by comparing rendering results with [PBRT](https://pbrt.
 ### Advanced Camera Effects 
 #### Depth of Field
 
+![Depth of Field](./images/dof_nori.png)
+
 This feature implements a thin lens camera with depth of field. Apart from the normal parameters of a pinhole camera, it also takes a `lensRadius` and a `focalDistance`, which characterize the parameters of the thin len.
 
 In this depth of field implementation, the thin lens camera model is utilized based on two key properties: any ray originating from the same point on the film plane and passing through the thin lens will converge at the same point on the plane of focus, and a ray passing through the center of the lens remains directionally unchanged. First, the corresponding point on the near plane is computed relative to the sampled position and transformed into camera coordinates. A ray is then traced from the center of the lens through this near plane point, and its intersection with the plane of focus determines the final point for the sampled ray. A point is uniformly sampled on the lens, and the ray originates from the sampled point on the film, passes through the lens sample, and intersects the focus plane. Finally, the ray is transformed into world coordinates and returned.
@@ -35,9 +37,13 @@ In this depth of field implementation, the thin lens camera model is utilized ba
 ### Simple Extra Emitters
 #### Directional Light
 
+![Directional Light](./images/directional_light_nori.png)
+
 A directional light simulates distant light sources, such as sunlight, that uniformly illuminate an entire scene. It has a fixed `direction` and remains constant as it travels through space. The light is characterized by two parameters: `radiance`, which defines the intensity, and `direction`, which specifies the light's orientation. Since the light covers the entire scene uniformly and does not attenuate with distance, the probability density function (PDF) is 1.0 everywhere, provided the light is not occluded. The evaluation method consistently returns the radiance. When sampling a directional light, the sampled point is considered to be infinitely far in the direction of the light's source.
 
 #### Spotlight
+
+![Spotlight](./images/spotlight_nori.png)
 
 A spotlight is a delta emitter that emits light in a conical shape from a specific position. The light intensity remains constant within a defined angle relative to its direction but gradually attenuates as the angle increases, following a specified falloff curve. Additionally, the radiance decreases with the square of the distance from the source. The spotlight is characterized by several properties: `position`, `direction`, `intensity`, and two parameters that define the angular falloff, `cosFalloffStart` and `cosFalloffEnd`. When sampling the spotlight, the sampled point is always at its position, and the probability density function (PDF) is consistently 1.0. The evaluation method returns the intensity, scaled by the falloff curve and further attenuated by the inverse square of the distance.
 

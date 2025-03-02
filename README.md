@@ -10,7 +10,7 @@ The features include a variety of integrators, shapes, textures, warpings, sampl
 
 The final project is centered around the theme: "The More You Look." In this work, we further implememt a selection of advanced ray tracer techniques, and eventually render a scene that reflects this theme using our own ray tracer implementation.
 
-The features implemented are listed below:
+The features implemented in the final project are listed below:
 
 | Short Name                      | Features (if required) & Comments                    |
 |----------------------------------|------------------------------------------------------|
